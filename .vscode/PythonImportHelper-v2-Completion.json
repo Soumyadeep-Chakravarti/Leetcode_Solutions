@@ -1,0 +1,38 @@
+[
+    {
+        "label": "Solution",
+        "kind": 6,
+        "importPath": "Minimum Array End",
+        "description": "Minimum Array End",
+        "peekOfCode": "class Solution:\n    def minEnd(self, n: int, x: int) -> int:\n        # Calculate the candidate last element\n        last_element = x | (n - 1)\n        # Ensure the last element is greater than x\n        if last_element <= x:\n            last_element = x + 1\n        return last_element",
+        "detail": "Minimum Array End",
+        "documentation": {}
+    },
+    {
+        "label": "isPalindrome",
+        "kind": 2,
+        "importPath": "PalindromeNumber",
+        "description": "PalindromeNumber",
+        "peekOfCode": "def isPalindrome(x:int):\n    comp_num = 0\n    if x<0:\n        return False\n    else:\n        while x>0:",
+        "detail": "PalindromeNumber",
+        "documentation": {}
+    },
+    {
+        "label": "twoSum",
+        "kind": 2,
+        "importPath": "TwoSum",
+        "description": "TwoSum",
+        "peekOfCode": "def twoSum(nums, target):\n    # Dictionary to store the number and its index\n    num_map = {}\n    # Iterate through the list of numbers\n    for i, num in enumerate(nums):\n        complement = target - num\n        # Check if the complement is in the dictionary\n        if complement in num_map:\n            # If it exists, return the indices\n            return [num_map[complement], i]",
+        "detail": "TwoSum",
+        "documentation": {}
+    },
+    {
+        "label": "Solution",
+        "kind": 6,
+        "importPath": "valid-parentheses",
+        "description": "valid-parentheses",
+        "peekOfCode": "class Solution:\n    def isValid(self, s: str) -> bool:\n        compare_dict  = {')': '(', '}': '{', ']': '['}\n        stack = []\n        for char in s:\n            if char in compare_dict:\n                top_element = stack.pop() if stack else '#'\n                if compare_dict[char] != top_element:\n                    return False\n            else:",
+        "detail": "valid-parentheses",
+        "documentation": {}
+    }
+]
