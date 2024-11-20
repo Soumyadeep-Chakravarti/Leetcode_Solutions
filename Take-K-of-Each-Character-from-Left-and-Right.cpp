@@ -1,40 +1,69 @@
+#include <algorithm>
+#include <array>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+#define NO_SAN                                                                 \
+  __attribute__((no_sanitize("undefined", "address", "coverage", "thread")))
+#define INL __attribute__((always_inline))
+#define HOT __attribute__((hot))
+
 class Solution {
+private:
+  static constexpr uint MAXV = 100'000;
+  static array<uint16_t, 3> freqs; // Using std::array for better type safety
+
+  static bool checkFreqs(const int k) INL NO_SAN HOT {
+    return freqs[0] >= k && freqs[1] >= k && freqs[2] >= k;
+  }
+
 public:
-  int takeCharacters(string s, int k) {
-    int n = s.length();
+  static int takeCharacters(const string &s, const int k) NO_SAN HOT {
+    const int n = s.length();
+    fill(freqs.begin(), freqs.end(), 0);
 
-    // Step 1: Check if there are enough characters in the string.
-    int countA = count(s.begin(), s.end(), 'a');
-    int countB = count(s.begin(), s.end(), 'b');
-    int countC = count(s.begin(), s.end(), 'c');
+    for (char c : s) {
+      freqs[c - 'a']++;
+    }
 
-    // If any character doesn't appear k times or more, return -1
-    if (countA < k || countB < k || countC < k) {
+    if (!checkFreqs(k)) {
       return -1;
     }
 
-    // Step 2: Sliding window to find the minimal subarray that contains at
-    // least k of each character.
-    unordered_map<char, int> freq;
+    int result = n;
     int left = 0;
-    int result = INT_MAX;
+    array<uint16_t, 3> window = {0, 0, 0};
 
-    // Slide the window from the right
-    for (int right = 0; right < n; ++right) {
-      freq[s[right]]++;
+    for (int right = 0; right < n; right++) {
+      window[s[right] - 'a']++;
 
-      // Check if the current window satisfies the condition (at least k of 'a',
-      // 'b', 'c')
-      while (freq['a'] >= k && freq['b'] >= k && freq['c'] >= k) {
-        // Update the result with the minimum window size
-        result = min(result, right - left + 1);
-
-        // Shrink the window from the left
-        freq[s[left]]--;
+      while (freqs[0] - window[0] < k || freqs[1] - window[1] < k ||
+             freqs[2] - window[2] < k) {
+        window[s[left] - 'a']--;
         left++;
       }
+
+      result = min(result, n - (right - left + 1));
     }
 
     return result;
   }
 };
+
+array<uint16_t, 3> Solution::freqs;
+
+static auto init = []() NO_SAN HOT {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  return 'c';
+}();
+
+int main() {
+  Solution sol;
+  cout << sol.takeCharacters("aabaaaacaabc", 2) << endl; // Expected Output: 8
+  cout << sol.takeCharacters("a", 1) << endl;            // Expected Output: -1
+  return 0;
+}
